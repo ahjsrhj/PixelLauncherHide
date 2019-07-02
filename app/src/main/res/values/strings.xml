@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">PixelLauncher隐藏应用</string>
+    <string name="package_name">cn.imrhj.pixellauncherhide</string>
+
+    <string name="floating_action_button_behavior">cn.imrhj.pixellauncherhide.ui.FloatingBehavior</string>
+    <string name="search">搜索</string>
+    <string name="setting">设置</string>
+</resources>

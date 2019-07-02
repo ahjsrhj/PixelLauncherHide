@@ -1,0 +1,67 @@
+apply plugin: 'com.android.application'
+
+apply plugin: 'kotlin-android'
+
+apply plugin: 'kotlin-android-extensions'
+
+Properties props = new Properties()
+boolean isHasFile = false
+File propFile = file('../local.properties')
+if (propFile.exists()) {
+    isHasFile = true
+    props.load(new FileInputStream(propFile))
+}
+
+android {
+    compileSdkVersion versions.compileSdk
+    buildToolsVersion versions.buildTools
+    defaultConfig {
+        applicationId "cn.imrhj.pixellauncherhide"
+        minSdkVersion 21
+        targetSdkVersion versions.targetSdk
+        versionCode 1
+        versionName "1.0"
+    }
+    signingConfigs {
+        defaultConfig {
+            keyAlias isHasFile ? props['ALIAS_NAME'] : System.getenv("ALIAS_NAME")
+            keyPassword isHasFile ? props['ALIAS_PASS'] : System.getenv("ALIAS_PASS")
+            storePassword isHasFile ? props['KEYSTORE_PASS'] : System.getenv("KEYSTORE_PASS")
+            storeFile isHasFile ? file(props['KEYSTORE_URL']) : file("../.hexer.keystore")
+            v1SigningEnabled true
+            v2SigningEnabled true
+        }
+    }
+
+    buildTypes {
+        debug {
+            debuggable true
+            minifyEnabled false
+            zipAlignEnabled false
+            shrinkResources false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.defaultConfig
+        }
+
+        release {
+            debuggable false
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.defaultConfig
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${versions.kotlin}"
+    implementation "com.android.support:appcompat-v7:${versions.supportLibrary}"
+    implementation "com.android.support:cardview-v7:${versions.supportLibrary}"
+    implementation "com.android.support:recyclerview-v7:${versions.supportLibrary}"
+    implementation "com.android.support:design:${versions.supportLibrary}"
+
+    compileOnly 'de.robv.android.xposed:api:82'
+    compileOnly 'de.robv.android.xposed:api:82:sources'
+}
